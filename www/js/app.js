@@ -32,6 +32,7 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 		}
 		
 		 ImgCache.$init();
+		alert('test');
 	});
 })
 
