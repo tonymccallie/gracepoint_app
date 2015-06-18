@@ -31,8 +31,8 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 			$cordovaStatusBar.style(2);
 		}
 		
-		 ImgCache.$init();
-		alert('test');
+	}).then(function() {
+		ImgCache.$init();
 	});
 })
 
