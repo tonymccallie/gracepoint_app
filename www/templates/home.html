@@ -13,8 +13,6 @@
 				</div>
 			</ion-slide>
 		</ion-slide-box>
-		<pre ng-repeat="article in articles">{{imageDir+article.MediaImage.filename}}/width:800/height:450/crop:true/zoom:auto
-		
-		{{article}}</pre>
+		<img ng-repeat="article in articles" src="{{imageDir+article.MediaImage.filename}}/width:800/height:450/crop:true/zoom:auto"/>
 	</ion-content>
 </ion-view>
