@@ -30,8 +30,6 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 			// org.apache.cordova.statusbar required
 			$cordovaStatusBar.style(2);
 		}
-		
-	}).then(function() {
 		ImgCache.$init();
 	});
 })
