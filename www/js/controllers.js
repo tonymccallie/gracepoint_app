@@ -17,7 +17,6 @@ angular.module('greyback.controllers', [])
 	$scope.logs = [];
 	$scope.logs.push('HomeController');
 
-
 	// Update app code with new release from Ionic Deploy
 	$scope.doUpdate = function () {
 		$ionicDeploy.update().then(function (res) {

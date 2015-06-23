@@ -17,13 +17,14 @@ var onclickFix = function (html) {
 	return html.replace(/href=\"(.+?)\"/gi, 'onclick="window.open(\'$1\',\'_system\',\'location=yes\');"');
 }
 
-angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.core', 'ionic.service.push', 'ionic.service.deploy', 'greyback.controllers', 'greyback.services', 'greyback.utils'])
+angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.core', 'ionic.service.push', 'ionic.service.deploy', 'ionic.service.analytics', 'greyback.controllers', 'greyback.services', 'greyback.utils'])
 
-.run(function ($ionicPlatform, ImgCache) {
+.run(function ($ionicPlatform, $ionicAnalytics, ImgCache) {
 	$ionicPlatform.ready(function () {
+		$ionicAnalytics.register();
 		// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
 		// for form inputs)
-		if (window.cordova && window.cordova.plugins.Keyboard) {
+		if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
 			cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
 		}
 		if (window.StatusBar) {
@@ -40,7 +41,7 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 		// The App ID (from apps.ionic.io) for the server
 		app_id: '3de33e4f',
 		// The public API key all services will use for this app
-		api_key: 'dd2a68c9eb3d8cbe5b385aa55d40253fc6a9aa10e622e35a ',
+		api_key: 'dd2a68c9eb3d8cbe5b385aa55d40253fc6a9aa10e622e35a',
 		// Set the app to use development pushes
 		dev_push: true
 	});
