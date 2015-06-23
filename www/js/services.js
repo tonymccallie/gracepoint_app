@@ -48,6 +48,7 @@ angular.module('greyback.services', [])
 			$http.get(DOMAIN + '/ajax/plugin/news/news_articles/json/limit:4/category:3')
 				.success(function (response, status, headers, config) {
 				if (response.status === 'SUCCESS') {
+					articles = [];
 					angular.forEach(response.data, function (item) {
 						item.NewsArticle.body = onclickFix(item.NewsArticle.body);
 						articles.push(item);

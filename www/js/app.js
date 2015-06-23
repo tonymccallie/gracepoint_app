@@ -37,8 +37,6 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 
 .config(function ($ionicAppProvider, ImgCacheProvider, $stateProvider, $urlRouterProvider) {
 	// Identify app
-	console.log($ionicAppProvider);
-	
 	$ionicAppProvider.identify({
 		// The App ID (from apps.ionic.io) for the server
 		app_id: '3de33e4f',
