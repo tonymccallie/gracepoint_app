@@ -6,13 +6,17 @@ angular.module('greyback.controllers', [])
 		$scope.imageDir = DOMAIN + '/img/thumb/';
 	}])
 
-.controller('HomeController', function ($scope, $ionicModal, $ionicDeploy, $timeout, articles, posts, ImgCache) {
+.controller('HomeController', function ($scope, $ionicModal, $ionicDeploy, $timeout, articles, posts, ImgCache, $ionicApp) {
+	console.log($ionicApp);
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
 	// listen for the $ionicView.enter event:
 	//$scope.$on('$ionicView.enter', function(e) {
 	//});
+	
+	var server = $ionicApp.getValue('analytics_api_server');
+	console.log(server);
 
 	$scope.logs = [];
 	$scope.logs.push('HomeController');

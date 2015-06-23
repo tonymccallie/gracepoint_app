@@ -37,6 +37,8 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 
 .config(function ($ionicAppProvider, ImgCacheProvider, $stateProvider, $urlRouterProvider) {
 	// Identify app
+	console.log($ionicAppProvider);
+	
 	$ionicAppProvider.identify({
 		// The App ID (from apps.ionic.io) for the server
 		app_id: '3de33e4f',
@@ -84,6 +86,16 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 			},
 			posts: function (CommunityService) {
 				return CommunityService.getLatest();
+			}
+		}
+	})
+	
+	.state('menu.tabs.series', {
+		url: '/series',
+		views: {
+			'tab-series': {
+				templateUrl: 'templates/series.html',
+//				controller: 'SeriesCtrl'
 			}
 		}
 	})
