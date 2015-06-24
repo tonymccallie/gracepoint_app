@@ -3,12 +3,12 @@
 		<img src="img/logo.png" class="title-image" />
 	</ion-nav-title>
 	<ion-content>
-		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doHomeRefresh()"></ion-refresher>
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="update()"></ion-refresher>
 		<div class="scaleVid ratio16x9">
 			<ion-slide-box does-continue="true" auto-play="true">
 				<ion-slide ng-repeat="article in articles">
 					<div>
-						<a href="#/tab/article/{{$index}}">
+						<a ui-sref="menu.tabs.article({articleIndex: $index})">
 							<img ng-if="article.MediaImage.filename.length > 0" img-cache ic-src="{{imageDir+article.MediaImage.filename}}/width:800/height:450/crop:true/zoom:auto/{{article.MediaImage.filename}}" style="width: 100%;" />
 						</a>
 					</div>
@@ -33,10 +33,7 @@
 					</a>
 				</div>
 			</div>
-			<div ng-if="posts.length == 0">LOADING..</div>{{logs}}
-			<div ng-repeat="logs in log">{{log}}</div>
-			<button class="button button-primary button-block " ng-click="checkForUpdates()">Check for updates</button>
-			<button class="button button-stable button-block button-pulse" ng-if="hasUpdate" ng-click="doUpdate()">download update</button>
+			<div ng-if="posts.length == 0">LOADING..</div>
 		</div>
 	</ion-content>
 </ion-view>

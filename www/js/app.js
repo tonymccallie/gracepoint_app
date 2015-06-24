@@ -79,11 +79,26 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 			}
 		},
 		resolve: {
-			articles: function (NewsService) {
-				return NewsService.getLatest();
+			articles: function(NewsService) {
+				return NewsService.latest();
 			},
-			posts: function (CommunityService) {
+			posts: function(CommunityService) {
 				return CommunityService.getLatest();
+			}
+		}
+	})
+	
+	.state('menu.tabs.article',{
+		url: '/article/:articleIndex',
+		views: {
+			'tab-home': {
+				templateUrl: 'templates/article.html',
+				controller: 'NewsController'
+			}
+		},
+		resolve: {
+			article: function(NewsService, $stateParams) {
+				return NewsService.article($stateParams.articleIndex)
 			}
 		}
 	})
@@ -94,6 +109,21 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 			'tab-series': {
 				templateUrl: 'templates/series.html',
 //				controller: 'SeriesCtrl'
+			}
+		},
+		resolve: {
+			series: function(MessagesService) {
+				return MessagesService.getLatestSeries();
+			}
+		}
+	})
+	
+	.state('menu.tabs.settings', {
+		url: '/settings',
+		views: {
+			'tab-static': {
+				templateUrl: 'templates/settings.html',
+				controller: 'SettingsController'
 			}
 		}
 	})
