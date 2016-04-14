@@ -35,7 +35,7 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 	});
 })
 
-.config(function ($ionicAppProvider, ImgCacheProvider, $stateProvider, $urlRouterProvider) {
+.config(function ($ionicAppProvider, ImgCacheProvider, $stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 	// Identify app
 	$ionicAppProvider.identify({
 		// The App ID (from apps.ionic.io) for the server
@@ -48,6 +48,9 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 
 	ImgCacheProvider.manualInit = true;
 
+	$ionicConfigProvider.backButton.previousTitleText(false).text('<i class="threeleaf">5</i>').icon('');
+	$ionicConfigProvider.tabs.position('bottom');
+	
 	$stateProvider
 
 	.state('menu', {
@@ -83,7 +86,7 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 				return NewsService.latest();
 			},
 			posts: function(CommunityService) {
-				return CommunityService.getLatest();
+				return CommunityService.latest();
 			}
 		}
 	})
@@ -103,6 +106,21 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 		}
 	})
 	
+	.state('menu.tabs.post',{
+		url: '/post/:postIndex',
+		views: {
+			'tab-home': {
+				templateUrl: 'templates/post.html',
+				controller: 'CommunityController'
+			}
+		},
+		resolve: {
+			post: function(CommunityService, $stateParams) {
+				return CommunityService.post($stateParams.postIndex)
+			}
+		}
+	})
+	
 	.state('menu.tabs.series', {
 		url: '/series',
 		views: {
@@ -113,7 +131,7 @@ angular.module('greyback', ['ionic', 'ngCordova', 'ImgCache', 'ionic.service.cor
 		},
 		resolve: {
 			series: function(MessagesService) {
-				return MessagesService.getLatestSeries();
+				return MessagesService.series();
 			}
 		}
 	})

@@ -28,7 +28,7 @@ angular.module('greyback.services', [])
 					articles.push(item);
 					temp = item;
 				});
-				
+
 				//save to cache
 				$localStorage.setArray('NewsLatest', articles);
 				$ionicSlideBoxDelegate.update();
@@ -43,11 +43,11 @@ angular.module('greyback.services', [])
 		});
 		return promise;
 	}
-	
-	self.update = function() {
+
+	self.update = function () {
 		console.log('NewsService.update');
 		var deferred = $q.defer();
-		self.remote().then(function(remoteArticles) {
+		self.remote().then(function (remoteArticles) {
 			deferred.resolve(articles);
 		});
 		return deferred.promise;
@@ -58,11 +58,11 @@ angular.module('greyback.services', [])
 		var deferred = $q.defer();
 		self.local().then(function (storedArticles) {
 			if (storedArticles.length > 0) {
-				console.log('use local');
+				console.log('NewsService: use local');
 				articles = storedArticles;
 				deferred.resolve(articles);
 			} else {
-				console.log('use remote');
+				console.log('NewsService: use remote');
 				self.remote().then(function (remoteArticles) {
 					deferred.resolve(articles);
 				});
@@ -75,13 +75,13 @@ angular.module('greyback.services', [])
 		console.log('NewsService.latest');
 		var deferred = $q.defer();
 		if (articles.length === 0) {
-			console.log('no articles');
+			console.log('NewsService: no articles');
 			self.init().then(function (initArticles) {
 				articles = initArticles;
 				deferred.resolve(initArticles);
 			});
 		} else {
-			console.log('had articles');
+			console.log('NewsService: had articles');
 			deferred.resolve(articles);
 		}
 		$ionicSlideBoxDelegate.update();
@@ -93,10 +93,8 @@ angular.module('greyback.services', [])
 		var deferred = $q.defer();
 		if (articles.length === 0) {
 			console.log('empty');
-			console.log($state);
 			$location.path('/tab/home');
 			$location.replace();
-			//$state.go('menu.tabs.home');
 			return null;
 		} else {
 			deferred.resolve(articles[$articleIndex]);
@@ -105,52 +103,204 @@ angular.module('greyback.services', [])
 	}
 })
 
-.service('CommunityService', function ($http, $location) {
+.service('CommunityService', function ($q, $http, $location, $ionicSlideBoxDelegate, $localStorage, $state) {
 	console.log('CommunityService');
 	var self = this;
+	var posts = [];
 
-	self.getLatest = function () {
-		console.log('CommunityService.getLatest');
-		return $http.get(DOMAIN + '/ajax/plugin/news/news_articles/json/limit:4/category:3');
-		//				.success(function (response, status, headers, config) {
-		//				if (response.status === 'SUCCESS') {
-		//					angular.forEach(response.data, function (item) {
-		//						item.NewsArticle.body = onclickFix(item.NewsArticle.body);
-		//						articles.push(item);
-		//					});
-		//					$ionicSlideBoxDelegate.update();
-		//				} else {
-		//					alert('there was a server error for NEWS');
-		//					console.log(response);
-		//				}
-		//			})
-		//				.error(function (response, status, headers, config) {
-		//				console.log(['error', data, status, headers, config]);
-		//			});
+	self.local = function () {
+		console.log('CommunityService.local');
+		var deferred = $q.defer();
+		var localPosts = $localStorage.getArray('CommunityLatest');
+		deferred.resolve(localPosts);
+		return deferred.promise;
+	}
+
+	self.remote = function () {
+		console.log('CommunityService.remote');
+		var promise = $http.get(DOMAIN + '/ajax/plugin/community/community_posts/json')
+			.success(function (response, status, headers, config) {
+
+			if (response.status === 'SUCCESS') {
+				//empty articles
+				posts = [];
+				//populate
+				var temp = {};
+				angular.forEach(response.data, function (item) {
+					item.CommunityPost.body = onclickFix(item.CommunityPost.body);
+					posts.push(item);
+					temp = item;
+				});
+
+				//save to cache
+				$localStorage.setArray('CommunityLatest', posts);
+
+			} else {
+				alert('there was a server error for COMMUNITY');
+				console.log(response);
+			}
+		})
+			.error(function (response, status, headers, config) {
+			console.log(['error', data, status, headers, config]);
+		});
+		return promise;
+	}
+
+	self.update = function () {
+		console.log('CommunityService.update');
+		var deferred = $q.defer();
+		self.remote().then(function (remotePosts) {
+			deferred.resolve(posts);
+		});
+		return deferred.promise;
+	}
+
+	self.init = function () {
+		console.log('CommunityService.init');
+		var deferred = $q.defer();
+		self.local().then(function (storedPosts) {
+			if (storedPosts.length > 0) {
+				console.log('CommunityService: use local');
+				posts = storedPosts;
+				deferred.resolve(posts);
+			} else {
+				console.log('CommunityService: use remote');
+				self.remote().then(function (remotePosts) {
+					deferred.resolve(posts);
+				});
+			}
+		});
+		return deferred.promise;
+	}
+
+	self.latest = function () {
+		console.log('CommunityService.latest');
+		var deferred = $q.defer();
+		if (posts.length === 0) {
+			console.log('CommunityService: no posts');
+			self.init().then(function (initPosts) {
+				posts = initPosts;
+				deferred.resolve(initPosts);
+			});
+		} else {
+			console.log('CommunityService: had posts');
+			deferred.resolve(posts);
+		}
+		return deferred.promise;
+	}
+
+	self.post = function ($postIndex) {
+		console.log('CommunityService.post');
+		var deferred = $q.defer();
+		if (posts.length === 0) {
+			console.log('empty');
+			$location.path('/tab/home');
+			$location.replace();
+			return null;
+		} else {
+			deferred.resolve(posts[$postIndex]);
+		}
+		return deferred.promise;
 	}
 })
 
-.service('MessagesService', function ($http, $location) {
+.service('MessagesService', function ($q, $http, $location, $ionicSlideBoxDelegate, $localStorage, $state) {
 	console.log('MessagesService');
 	var self = this;
+	var series = [];
 
-	self.getLatestSeries = function () {
-		console.log('MessagesService.getLatestSeries');
-		return $http.get(DOMAIN + '/ajax/plugin/news/news_articles/json/limit:4/category:3');
-		//				.success(function (response, status, headers, config) {
-		//				if (response.status === 'SUCCESS') {
-		//					angular.forEach(response.data, function (item) {
-		//						item.NewsArticle.body = onclickFix(item.NewsArticle.body);
-		//						articles.push(item);
-		//					});
-		//					$ionicSlideBoxDelegate.update();
-		//				} else {
-		//					alert('there was a server error for NEWS');
-		//					console.log(response);
-		//				}
-		//			})
-		//				.error(function (response, status, headers, config) {
-		//				console.log(['error', data, status, headers, config]);
-		//			});
+	self.local = function () {
+		console.log('MessagesService.local');
+		var deferred = $q.defer();
+		var localPosts = $localStorage.getArray('MessageSeries');
+		deferred.resolve(localPosts);
+		return deferred.promise;
+	}
+
+	self.remote = function () {
+		console.log('MessagesService.remote');
+		var promise = $http.get(DOMAIN + '/ajax/plugin/community/community_posts/json')
+			.success(function (response, status, headers, config) {
+
+			if (response.status === 'SUCCESS') {
+				//empty articles
+				posts = [];
+				//populate
+				var temp = {};
+				angular.forEach(response.data, function (item) {
+					item.CommunityPost.body = onclickFix(item.CommunityPost.body);
+					posts.push(item);
+					temp = item;
+				});
+
+				//save to cache
+				$localStorage.setArray('MessageSeries', posts);
+
+			} else {
+				alert('there was a server error for COMMUNITY');
+				console.log(response);
+			}
+		})
+			.error(function (response, status, headers, config) {
+			console.log(['error', data, status, headers, config]);
+		});
+		return promise;
+	}
+
+	self.update = function () {
+		console.log('MessagesService.update');
+		var deferred = $q.defer();
+		self.remote().then(function (remotePosts) {
+			deferred.resolve(posts);
+		});
+		return deferred.promise;
+	}
+
+	self.init = function () {
+		console.log('MessagesService.init');
+		var deferred = $q.defer();
+		self.local().then(function (storedPosts) {
+			if (storedPosts.length > 0) {
+				console.log('MessagesService: use local');
+				posts = storedPosts;
+				deferred.resolve(posts);
+			} else {
+				console.log('MessagesService: use remote');
+				self.remote().then(function (remotePosts) {
+					deferred.resolve(posts);
+				});
+			}
+		});
+		return deferred.promise;
+	}
+
+	self.latest = function () {
+		console.log('MessagesService.latest');
+		var deferred = $q.defer();
+		if (posts.length === 0) {
+			console.log('MessagesService: no posts');
+			self.init().then(function (initPosts) {
+				posts = initPosts;
+				deferred.resolve(initPosts);
+			});
+		} else {
+			console.log('MessagesService: had posts');
+			deferred.resolve(posts);
+		}
+		return deferred.promise;
+	}
+
+	self.post = function ($postIndex) {
+		console.log('MessagesService.post');
+		var deferred = $q.defer();
+		if (posts.length === 0) {
+			console.log('empty');
+			$location.path('/tab/home');
+			$location.replace();
+			return null;
+		} else {
+			deferred.resolve(posts[$postIndex]);
+		}
+		return deferred.promise;
 	}
 })

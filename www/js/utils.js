@@ -1,5 +1,11 @@
 angular.module('greyback.utils', [])
 
+.filter('trusted', function ($sce) {
+    return function(url) {
+        return $sce.trustAsResourceUrl(url);
+    };
+})
+
 .factory('$localStorage', function ($window) {
 	return {
 		set: function (key, value) {
